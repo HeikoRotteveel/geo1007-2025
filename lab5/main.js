@@ -30,70 +30,6 @@ let baseLayers = {
 };
 let toc = L.control.layers(baseLayers).addTo(map);
 
-// Register a geocoder to the map app 
-register_geocoder = function (mapInstance) {
-  let polygon = null;
-
-  function clear() {
-    if (polygon !== null) {
-      mapInstance.removeLayer(polygon);
-    }
-  }
-
-  var geocoder = L.Control.geocoder({
-    defaultMarkGeocode: false
-  })
-    .on('markgeocode', function (e) {
-      clear()
-      var bbox = e.geocode.bbox;
-      polygon = L.polygon([
-        bbox.getSouthEast(),
-        bbox.getNorthEast(),
-        bbox.getNorthWest(),
-        bbox.getSouthWest()
-      ]);
-      mapInstance.addLayer(polygon);
-      mapInstance.fitBounds(polygon.getBounds());
-      setTimeout(clear, 2500);
-    })
-    .addTo(mapInstance);
-  return geocoder;
-}
-
-register_geocoder(map)
-
-// Register a geocoder to the map app 
-register_geocoder = function (mapInstance) {
-  let polygon = null;
-
-  function clear() {
-    if (polygon !== null) {
-      mapInstance.removeLayer(polygon);
-    }
-  }
-
-  var geocoder = L.Control.geocoder({
-    defaultMarkGeocode: false
-  })
-    .on('markgeocode', function (e) {
-      clear()
-      var bbox = e.geocode.bbox;
-      polygon = L.polygon([
-        bbox.getSouthEast(),
-        bbox.getNorthEast(),
-        bbox.getNorthWest(),
-        bbox.getSouthWest()
-      ]);
-      mapInstance.addLayer(polygon);
-      mapInstance.fitBounds(polygon.getBounds());
-      setTimeout(clear, 2500);
-    })
-    .addTo(mapInstance);
-  return geocoder;
-}
-
-register_geocoder(map);
-
 function registerGeoLocate(mapInstance) {
   mapInstance.locate({ setView: true, maxZoom: 16 });
 
@@ -175,33 +111,33 @@ registerGeoLocate(map);
      }
      return performInsert; // return function reference to be able to insert data
  }
- let insertWFS = registerWFSReadAndWriteLayer(map, toc);
+ let insertWFS = registerWFSReadAndWriteLayer(map, toc)
 
  function registerPopUpForInsert(mapInstance) {
-     var popup = L.popup();
+  var popup = L.popup();
 
-     function onMapClick(e) {
-         var lng = e.latlng.lng;
-         var lat = e.latlng.lat;
+  function onMapClick(e) {
+      var lng = e.latlng.lng;
+      var lat = e.latlng.lat;
 
-         var js_function = ''
-         + ' var poi_name = document.getElementById(\'poi_name\').value ; '
-         + ' var reported_by = document.getElementById(\'reported_by\').value ; '
-         + ' insertWFS(' + lng + ',' + lat + ', poi_name, reported_by) ; ';
+      var js_function = ''
+      + ' var poi_name = document.getElementById(\'poi_name\').value ; '
+      + ' var reported_by = document.getElementById(\'reported_by\').value ; '
+      + ' insertWFS(' + lng + ',' + lat + ', poi_name, reported_by) ; ';
 
-         var popupContent = ''
-         + '<label for="poi_name">Point of Interest: </label><br>'
-         + '<input type="text" id="poi_name" name="poi_name" value=""><br>'
-         + '<label for="reported_by" >Reported by: </label><br>'
-         + '<input type="text" id="reported_by" name="reported_by" value=""><br>'
-         + '<button type="button" onclick="' + js_function + '">Insert point</button>';
+      var popupContent = ''
+      + '<label for="poi_name">Point of Interest: </label><br>'
+      + '<input type="text" id="poi_name" name="poi_name" value=""><br>'
+      + '<label for="reported_by" >Reported by: </label><br>'
+      + '<input type="text" id="reported_by" name="reported_by" value=""><br>'
+      + '<button type="button" onclick="' + js_function + '">Insert point</button>';
 
-         popup
-         .setLatLng(e.latlng)
-         .setContent(popupContent)
-         .openOn(mapInstance);
-     }
+      popup
+      .setLatLng(e.latlng)
+      .setContent(popupContent)
+      .openOn(mapInstance);
+  }
 
-     mapInstance.on('click', onMapClick);
- }
- registerPopUpForInsert(map);
+  mapInstance.on('click', onMapClick);
+}
+registerPopUpForInsert(map)
